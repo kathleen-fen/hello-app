@@ -9,22 +9,26 @@
                 <fieldset *ngIf="!loginMode">
                     <div class="form-group">
                         <label>First Name:</label>
-                        <input class="form-control" type="text" formControlName="firstName">    
+                        <input class="form-control" type="text" formControlName="firstName">  
+                        <div  *ngIf="authForm.get('firstName').invalid && authForm.get('firstName').touched" class="validation"><small>Please enter your name min length 2</small></div>  
                     </div>
                     <div class="form-group">
                         <label>Last Name:</label>
                         <input class="form-control" type="text" formControlName="lastName">
+                        <div  *ngIf="authForm.get('lastName').invalid && authForm.get('lastName').touched" class="validation"><small>Please enter your last name min length 2</small></div>  
                     </div>
                 </fieldset>
                 <div class="form-group">
                     <label>Email:</label>
                     <input class="form-control" type="text" formControlName="email">
+                    <div  *ngIf="authForm.get('email').invalid && authForm.get('email').touched" class="validation"><small>Please enter correct email</small></div>  
                 </div>
                 <div class="form-group">
                     <label>Password:</label>
                     <input class="form-control" type="password" formControlName="password">
+                    <div  *ngIf="authForm.get('password').invalid && authForm.get('password').touched" class="validation"><small>Please enter password min length 8</small></div>  
                 </div>
-                <button class="btn btn-primary"  type="submit">{{ loginMode ? 'Sign In' : 'Sign Up'}}</button>
+                <button [disabled]="!authForm.valid" class="btn btn-primary"  type="submit">{{ loginMode ? 'Sign In' : 'Sign Up'}}</button>
                 <span  class="link ml-5 text-primary"  (click)="changeMode()"><u>{{ loginMode ? 'Create an account' : 'I have an account'}}</u></span>
             </form>
         </div>

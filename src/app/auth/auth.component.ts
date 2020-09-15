@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, Validators, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { AuthService } from '../core/services/auth.service'
@@ -9,14 +9,15 @@ import { AuthService } from '../core/services/auth.service'
   templateUrl: './auth.component.html',
   styleUrls: ['./auth.component.scss']
 })
+
 export class AuthComponent implements OnInit {
   loginMode = true;
   error: string = null;
   authForm = this.fb.group({
     firstName: [''],
     lastName: [''],
-    email: ['',Validators.required],
-    password: ['',Validators.required]
+    email: ['',[Validators.required, Validators.email]],
+    password: ['',[Validators.required, Validators.minLength(8)]]
   });
 
   constructor(
@@ -27,6 +28,7 @@ export class AuthComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
+    this.setUpValidation();
   }
 
   onSubmit() {
@@ -58,11 +60,22 @@ export class AuthComponent implements OnInit {
       })
     }
     this.authForm.reset();
-   // console.log(this.authForm.value);
   }
 
   changeMode() {
-    this.loginMode = !this.loginMode
+    this.loginMode = !this.loginMode;
+    this.authForm.reset();
+    this.setUpValidation();
+  }
+
+  setUpValidation() {
+    if (!this.loginMode) {
+      this.authForm.get('firstName').setValidators(Validators.required);
+      this.authForm.get('lastName').setValidators(Validators.required);
+    } else {
+      this.authForm.get('firstName').setValidators([]);
+      this.authForm.get('lastName').setValidators([]);
+    }
   }
 
 }
