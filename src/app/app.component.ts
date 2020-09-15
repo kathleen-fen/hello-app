@@ -26,8 +26,6 @@ export class AppComponent implements OnInit{
     this.authService.user.subscribe(user => {
       this.isAuth = !!user
     })
-    
-    console.log(this.isAuth)
   }
 
   onLogout()  {

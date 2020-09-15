@@ -13,9 +13,9 @@ export class AuthService {
 
     constructor(private dbService: NgxIndexedDBService) {}
 
-    isAuth() {
+    /* isAuth() {
         return !!this.user.getValue()
-    }
+    } */
 
     signIn(email: string, password: string) {
         return this.dbService.getByIndex('users', 'email', email)
