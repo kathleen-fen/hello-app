@@ -12,12 +12,14 @@ export class AppComponent {
   constructor(private dbService: NgxIndexedDBService){
   }
   title = 'hello-app';
-
+  
   putData() {
     this.dbService
-  .add('people', {
-    name: `Bruce Wayne`,
+  .add('users', {
+    firstName: `Bruce`,
+    lastName: `Wayne`,
     email: `bruce@wayne.com`,
+    password: `111111`
   })
   .subscribe((key) => {
     console.log('key: ', key);
@@ -28,11 +30,11 @@ export class AppComponent {
     /* this.dbService.getByKey('people', 1).subscribe((people) => {
       console.log(people);
     },); */
-    /* this.dbService.getAll('people').subscribe((peoples) => {
+    this.dbService.getAll('users').subscribe((peoples) => {
       console.log(peoples);
-    }); */
-    this.dbService.getByIndex('people', 'name', 'Bruce Wayne').subscribe((people) => {
-      console.log(people);
     });
+    /* this.dbService.getByIndex('users', 'email', 'bruce@wayne.com').subscribe((people) => {
+      console.log(people);
+    }); */
   }
 }

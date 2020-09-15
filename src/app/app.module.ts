@@ -11,7 +11,7 @@ import { MainComponent } from './main/main.component';
 
 
 const dbConfig: DBConfig  = {
-  name: 'MyDb',
+  name: 'DB',
   version: 1,
   objectStoresMeta: [{
     store: 'users',
@@ -20,7 +20,7 @@ const dbConfig: DBConfig  = {
       { name: 'firstName', keypath: 'firstName', options: { unique: false } },
       { name: 'lastName', keypath: 'lastName', options: { unique: false } },
       { name: 'email', keypath: 'email', options: { unique: true } },
-      { name: 'email', keypath: 'password', options: { unique: false } },
+      { name: 'password', keypath: 'password', options: { unique: false } },
     ]
   }]
 };
