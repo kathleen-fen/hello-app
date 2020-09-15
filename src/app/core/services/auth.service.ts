@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
-import { map, tap } from 'rxjs/operators'
+import { map, tap } from 'rxjs/operators';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 import { User } from '../models/user.model'
-import { BehaviorSubject, throwError, Subject } from 'rxjs';
-
 
 @Injectable({providedIn: 'root'})
 
@@ -14,10 +13,10 @@ export class AuthService {
 
     constructor(private dbService: NgxIndexedDBService) {}
 
-    signIn(email: string, password: string) {
-        return this.dbService.getByIndex('users', 'email', email)
+    signIn(userData: User) {
+        return this.dbService.getByIndex('users', 'email', userData.email)
         .pipe(map(data  => {
-            if (data && data.password===password) {
+            if (data && data.password===userData.password) {
                 return data
             } else {
                 this.error$.next(!!data ? 'The password is incorrect!' : 'This email is not registed!');
@@ -29,20 +28,10 @@ export class AuthService {
         }))
     }
 
-    signUp(email: string, password: string, firstName: string, lastName: string) {
+    signUp(userData: User) {
         return this.dbService
-        .add('users', {
-            firstName: firstName,
-            lastName: lastName,
-            email: email,
-            password: password
-        })
-        .pipe(tap(() => {this.authHandle({
-            firstName: firstName,
-            lastName: lastName,
-            email: email,
-            password: password
-        })}))
+        .add('users', {...userData})
+        .pipe(tap(() => {this.authHandle({...userData})}))
     }
 
     authHandle(user: User) {

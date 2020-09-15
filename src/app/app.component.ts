@@ -1,21 +1,19 @@
-import { Component, OnInit } from '@angular/core';
-import { NgxIndexedDBService } from 'ngx-indexed-db';
-import { Router } from '@angular/router'
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 import { AuthService } from '../app/core/services/auth.service'
-
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit{
-  
+export class AppComponent implements OnInit, OnDestroy{
+  subUser: Subscription;
   title = 'hello-app';
   isAuth = false;
   constructor(
-    private dbService: NgxIndexedDBService,
     private authService: AuthService,
     private router: Router
     ){
@@ -23,7 +21,7 @@ export class AppComponent implements OnInit{
 
   ngOnInit() {
     this.authService.autoLogin();
-    this.authService.user.subscribe(user => {
+    this.subUser = this.authService.user.subscribe(user => {
       this.isAuth = !!user
     })
   }
@@ -33,29 +31,13 @@ export class AppComponent implements OnInit{
     this.router.navigate(['/auth']);
   }
 
- //temporary part 
-  putData() {
-    this.dbService
-  .add('users', {
-    firstName: `Bruce`,
-    lastName: `Wayne`,
-    email: `bruce@wayne.com`,
-    password: `111111`
-  })
-  .subscribe((key) => {
-    console.log('key: ', key);
-  });
+  onLogin() {
+    this.router.navigate(['/auth'])
   }
 
-  getData() {
-    /* this.dbService.getByKey('people', 1).subscribe((people) => {
-      console.log(people);
-    },); */
-    this.dbService.getAll('users').subscribe((peoples) => {
-      console.log(peoples);
-    });
-    /* this.dbService.getByIndex('users', 'email', 'bruce@wayne.com').subscribe((people) => {
-      console.log(people);
-    }); */
+  ngOnDestroy() {
+    if (this.subUser) {
+      this.subUser.unsubscribe();
+    }
   }
 }

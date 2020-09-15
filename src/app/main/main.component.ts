@@ -1,30 +1,33 @@
-import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../core/services/auth.service';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 
-import { Router } from '@angular/router'
+import { AuthService } from '../core/services/auth.service';
 
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.scss']
 })
-export class MainComponent implements OnInit {
+
+export class MainComponent implements OnInit, OnDestroy {
   user = '';
+  subUser: Subscription;
   constructor(
-    private authServer:AuthService,
-    private router: Router
+    private authServer: AuthService
     ) { }
 
   ngOnInit(): void {
-    
-    this.authServer.user.subscribe(userObject => {
+    this.subUser = this.authServer.user.subscribe(userObject => {
       if (!userObject) {
-        //this.router.navigate(['/auth']);
         return
       }
       this.user = userObject.firstName
     }) 
-
   }
 
+  ngOnDestroy() {
+    if(this.subUser) {
+      this.subUser.unsubscribe();
+    }
+  }
 }

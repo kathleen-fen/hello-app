@@ -1,0 +1,24 @@
+.wrapper {
+    position: relative;
+    min-height: 100vh;
+  }
+
+.github-icon {
+    display: flex;
+    align-items: flex-end;
+
+}
+.github-icon img {
+    width: 20px;
+}
+.github-icon div {
+    margin-right: 10px;
+}
+.footer {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100px;
+    margin-bottom: 50px;
+}

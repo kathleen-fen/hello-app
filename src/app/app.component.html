@@ -1,20 +1,33 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary ">
-  <div class="container-fluid">
-    <span class="navbar-brand" href="#">Application</span>
-    <ul class="nav navbar-nav pull-xs-right">
-      <li class="nav-item">
+<div class="wrapper">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary ">
+    <div class="container-fluid">
+      <span class="navbar-brand" href="#">Application</span>
+      <ul class="nav navbar-nav pull-xs-right">
+        <li class="nav-item">
+          <button class="btn btn-outline-light"
+            *ngIf="isAuth"
+            (click)="onLogout()">
+            Logout
+        </button>
         <button class="btn btn-outline-light"
-          *ngIf="isAuth"
-          (click)="onLogout()">
-          Logout
-       </button>
-      </li>
-    </ul>
-  </div>
-  
+        *ngIf="!isAuth"
+        (click)="onLogin()">
+        Login
+        </button>
+        </li>
+      </ul>
+    </div>
+  </nav>
 
-</nav>
-<!-- <h1>Hello</h1>
-<button class="btn btn-primary" (click)="putData()">put the data</button>
-<button (click)="getData()">get the data</button> -->
-<router-outlet></router-outlet>
+  <router-outlet></router-outlet>
+
+  <footer class="footer">
+    <div class="container">
+      <hr>
+      <p>Kathreen Fenchenko</p>
+      <div class="github-icon">
+        <div><img src="./../assets/icons/icons8-github.svg" alt="github"></div> 
+        <div><a href="https://github.com/kathleen-fen/hello-app" target="_blank">GitHub Link</a> </div></div>
+    </div>
+  </footer>
+</div>

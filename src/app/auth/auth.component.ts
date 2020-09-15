@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators, FormControl } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
-import { AuthService } from '../core/services/auth.service'
-import { Observable, Subscription, Subject } from 'rxjs';
+import { AuthService } from '../core/services/auth.service';
 
 @Component({
   selector: 'app-auth',
@@ -11,12 +11,14 @@ import { Observable, Subscription, Subject } from 'rxjs';
   styleUrls: ['./auth.component.scss']
 })
 
-export class AuthComponent implements OnInit {
+export class AuthComponent implements OnInit, OnDestroy {
   loginMode = true;
   error = null;
+  
   subError: Subscription;
-   // subError: Subscription;
-   authForm = this.fb.group({
+  subSignIn: Subscription;
+  subSignUp: Subscription;
+  authForm = this.fb.group({
     firstName: [''],
     lastName: [''],
     email: ['',[Validators.required, Validators.email]],
@@ -26,15 +28,12 @@ export class AuthComponent implements OnInit {
   constructor(
     private fb: FormBuilder, 
     private authService: AuthService,
-    private route: ActivatedRoute,
     private router: Router
     ) { }
 
   ngOnInit(): void {
-    console.log(this.authService.error$);
     this.subError = this.authService.error$.subscribe(er => {
       this.error = er;
-      console.log(this.error)
     });
     
     this.setUpValidation();
@@ -44,20 +43,13 @@ export class AuthComponent implements OnInit {
     if (!this.authForm.valid) {
       return
     }
-    const email = this.authForm.value.email;
-    const password = this.authForm.value.password;
-    const firstName = this.authForm.value.firstName;
-    const lastName = this.authForm.value.lastName;
+    
     if (this.loginMode) {
-      this.authService.signIn(email,password).subscribe((people) => {
-        console.log(people);
-        //this.error = null;
+      this.subSignIn = this.authService.signIn(this.authForm.value).subscribe((people) => {
         this.router.navigate(['main']);
       })
     } else {
-      this.authService.signUp(email,password, firstName, lastName).subscribe((key) => {
-        console.log('key: ', key);
-        //this.error = null;
+      this.subSignUp =this.authService.signUp(this.authForm.value).subscribe((key) => {
         this.router.navigate(['main']);
       }, err => {
         console.log(err)
@@ -87,4 +79,15 @@ export class AuthComponent implements OnInit {
     }
   }
 
+  ngOnDestroy() {
+    if (this.subError) {
+      this.subError.unsubscribe();
+    }
+    if (this.subSignIn) {
+      this.subSignIn.unsubscribe();
+    }
+    if (this.subSignUp) {
+      this.subSignUp.unsubscribe();
+    }
+  }
 }
