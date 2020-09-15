@@ -71,11 +71,13 @@ export class AuthComponent implements OnInit, OnDestroy {
 
   setUpValidation() {
     if (!this.loginMode) {
-      this.authForm.get('firstName').setValidators(Validators.required);
-      this.authForm.get('lastName').setValidators(Validators.required);
+      this.authForm.get('firstName').setValidators([Validators.required]);
+      this.authForm.get('lastName').setValidators([Validators.required]);
     } else {
       this.authForm.get('firstName').setValidators([]);
+      this.authForm.get('firstName').updateValueAndValidity();
       this.authForm.get('lastName').setValidators([]);
+      this.authForm.get('lastName').updateValueAndValidity();
     }
   }
 
