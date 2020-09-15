@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
+
+import { AuthService } from '../app/core/services/auth.service'
 
 
 @Component({
@@ -7,12 +9,21 @@ import { NgxIndexedDBService } from 'ngx-indexed-db';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
-
-  constructor(private dbService: NgxIndexedDBService){
-  }
+export class AppComponent implements OnInit{
+  
   title = 'hello-app';
   
+  constructor(
+    private dbService: NgxIndexedDBService,
+    private authService: AuthService
+    ){
+  }
+
+  ngOnInit() {
+    this.authService.autoLogin();
+  }
+  
+ //temporary part 
   putData() {
     this.dbService
   .add('users', {

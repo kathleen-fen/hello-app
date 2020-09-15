@@ -14,7 +14,7 @@ export class AuthService {
     constructor(private dbService: NgxIndexedDBService) {}
 
     isAuth() {
-        return !!this.user
+        return !!this.user.getValue()
     }
 
     signIn(email: string, password: string) {
@@ -24,7 +24,9 @@ export class AuthService {
                 return data
             } else return null
         }),
-        tap(data => {this.user.next(data)}))
+        tap(data => {
+            this.authHandle(data)
+        }))
     }
 
     signUp(email: string, password: string, firstName: string, lastName: string) {
@@ -35,7 +37,7 @@ export class AuthService {
             email: email,
             password: password
         })
-        .pipe(tap(() => {this.user.next({
+        .pipe(tap(() => {this.authHandle({
             firstName: firstName,
             lastName: lastName,
             email: email,
@@ -43,7 +45,21 @@ export class AuthService {
         })}))
     }
 
+    authHandle(user: User) {
+        this.user.next(user);
+        localStorage.setItem('user',JSON.stringify(user))
+    }
+
     logout() {
         this.user.next(null);
+        localStorage.removeItem('user');
+    }
+
+    autoLogin() {
+        let userData = JSON.parse(localStorage.getItem('user'));
+        if (!userData) {
+            return
+        }
+        this.authHandle(userData);
     }
 }
