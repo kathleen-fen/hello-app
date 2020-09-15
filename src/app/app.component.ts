@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
+import { Router } from '@angular/router'
 
 import { AuthService } from '../app/core/services/auth.service'
 
@@ -12,17 +13,28 @@ import { AuthService } from '../app/core/services/auth.service'
 export class AppComponent implements OnInit{
   
   title = 'hello-app';
-  
+  isAuth = false;
   constructor(
     private dbService: NgxIndexedDBService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
     ){
   }
 
   ngOnInit() {
     this.authService.autoLogin();
+    this.authService.user.subscribe(user => {
+      this.isAuth = !!user
+    })
+    
+    console.log(this.isAuth)
   }
-  
+
+  onLogout()  {
+    this.authService.logout();
+    this.router.navigate(['/auth']);
+  }
+
  //temporary part 
   putData() {
     this.dbService
