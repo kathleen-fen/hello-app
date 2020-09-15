@@ -3,29 +3,29 @@ import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { map, tap } from 'rxjs/operators'
 
 import { User } from '../models/user.model'
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, throwError, Subject } from 'rxjs';
 
 
 @Injectable({providedIn: 'root'})
 
 export class AuthService {
     user = new BehaviorSubject<User>(null);
+    error$ = new Subject<string>();
 
     constructor(private dbService: NgxIndexedDBService) {}
-
-    /* isAuth() {
-        return !!this.user.getValue()
-    } */
 
     signIn(email: string, password: string) {
         return this.dbService.getByIndex('users', 'email', email)
         .pipe(map(data  => {
             if (data && data.password===password) {
                 return data
-            } else return null
+            } else {
+                this.error$.next(!!data ? 'The password is incorrect!' : 'This email is not registed!');
+                return null;
+            }
         }),
         tap(data => {
-            this.authHandle(data)
+            this.authHandle(data);
         }))
     }
 
@@ -47,7 +47,10 @@ export class AuthService {
 
     authHandle(user: User) {
         this.user.next(user);
-        localStorage.setItem('user',JSON.stringify(user))
+        if (user) {
+            localStorage.setItem('user',JSON.stringify(user));
+        }
+        
     }
 
     logout() {

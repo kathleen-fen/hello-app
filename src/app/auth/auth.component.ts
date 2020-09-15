@@ -3,6 +3,7 @@ import { FormBuilder, Validators, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { AuthService } from '../core/services/auth.service'
+import { Observable, Subscription, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-auth',
@@ -12,8 +13,10 @@ import { AuthService } from '../core/services/auth.service'
 
 export class AuthComponent implements OnInit {
   loginMode = true;
-  error: string = null;
-  authForm = this.fb.group({
+  error = null;
+  subError: Subscription;
+   // subError: Subscription;
+   authForm = this.fb.group({
     firstName: [''],
     lastName: [''],
     email: ['',[Validators.required, Validators.email]],
@@ -28,6 +31,12 @@ export class AuthComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
+    console.log(this.authService.error$);
+    this.subError = this.authService.error$.subscribe(er => {
+      this.error = er;
+      console.log(this.error)
+    });
+    
     this.setUpValidation();
   }
 
@@ -42,13 +51,13 @@ export class AuthComponent implements OnInit {
     if (this.loginMode) {
       this.authService.signIn(email,password).subscribe((people) => {
         console.log(people);
-        this.error = null;
+        //this.error = null;
         this.router.navigate(['main']);
       })
     } else {
       this.authService.signUp(email,password, firstName, lastName).subscribe((key) => {
         console.log('key: ', key);
-        this.error = null;
+        //this.error = null;
         this.router.navigate(['main']);
       }, err => {
         console.log(err)
