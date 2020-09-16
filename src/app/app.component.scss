@@ -1,7 +1,6 @@
 .wrapper {
-    position: relative;
-    min-height: 100vh;
-  }
+    min-height: 80vh;
+}
 
 .github-icon {
     display: flex;
@@ -13,12 +12,4 @@
 }
 .github-icon div {
     margin-right: 10px;
-}
-.footer {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    height: 100px;
-    margin-bottom: 50px;
 }
